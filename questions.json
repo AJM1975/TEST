@@ -1,0 +1,273 @@
+import json
+from pathlib import Path
+
+existing_questions = [
+  "If animals could talk, which would be the rudest?",
+  "What invention should never have been invented?",
+  "If you were invisible for one day, what would you do?",
+  "What is your most useless talent?",
+  "What would your autobiography be called?",
+  "If your pet became president, what would happen first?",
+  "What is something everyone pretends to understand?",
+  "If toast could talk, what would it say?",
+  "What would you ban immediately if you ruled the world?",
+  "What is the strangest thing you've ever eaten?",
+  "If you could relive one day, which would it be?",
+  "What advice would you give your younger self?",
+  "What makes a great leader?",
+  "What skill should every person learn?",
+  "What is one thing technology has improved?",
+  "What is one thing technology has ruined?",
+  "What does success mean to you?",
+  "What is the best lesson you've learned?",
+  "What would you do with a million dollars?",
+  "What would your dream retirement look like?",
+  "What fictional character would make a terrible boss?",
+  "If aliens landed today, what would you show them first?",
+  "If you could swap jobs with anyone, who would it be?",
+  "What would be the hardest thing about being famous?",
+  "What is your favourite family tradition?",
+  "What would you do if you won the lottery?",
+  "What makes a speech memorable?",
+  "What is something you are grateful for?",
+  "What would be your superpower?",
+  "What would your superhero name be?",
+  "If coffee disappeared tomorrow, what would happen?",
+  "What is the best invention ever?",
+  "What should be taught in schools but isn't?",
+  "What is your favourite holiday?",
+  "What is one thing on your bucket list?",
+  "What is the funniest thing you've witnessed?",
+  "What is the best piece of advice you've received?",
+  "What would your perfect day look like?",
+  "What makes someone trustworthy?",
+  "What is the most underrated job?",
+  "If you could time travel, where would you go?",
+  "What is the best book you've ever read?",
+  "What is your favourite movie quote?",
+  "What would you name a new planet?",
+  "If you had to eat one food forever, what would it be?",
+  "What would your personal theme song be?",
+  "What is your hidden talent?",
+  "What is the most adventurous thing you've done?",
+  "What would you do if you had no fear?",
+  "What would make the world a better place?",
+  "If your toaster could give you life advice, what would it say?",
+  "You have been appointed Minister for Ridiculous Public Holidays. What new holiday are you creating?",
+  "If socks disappear in the washing machine, where do they actually go?",
+  "You wake up tomorrow and every dog can speak, but only to complain. What is the first thing they say?",
+  "What everyday object would make the worst motivational speaker?",
+  "You are launching a new Olympic sport based on household chores. What is it, and how do you win?",
+  "If aliens landed in your backyard and asked you to explain “small talk,” what would you say?",
+  "What food deserves its own national anthem?",
+  "You have to rename Monday to make it sound more appealing. What do you call it?",
+  "If your life had a warning label, what would it say?"
+]
+
+subjects = [
+    "your fridge", "your bicycle", "your coffee mug", "your shoes", "your calendar",
+    "a garden gnome", "your phone", "your alarm clock", "your car", "your favourite snack",
+    "a confused robot", "a very dramatic pigeon", "your couch", "your childhood backpack",
+    "a supermarket trolley", "a gym towel", "a traffic cone", "your laptop", "a houseplant",
+    "a pair of sunglasses", "your favourite pen", "a lost umbrella", "a beach towel", "a teaspoon",
+    "a library book", "a lunchbox", "a microwave", "a vacuum cleaner", "your front door",
+    "a pair of socks", "a suitcase", "a remote control", "a toothbrush", "a shopping receipt",
+    "a keyboard", "a water bottle", "an office chair", "a bicycle helmet", "a rubber duck",
+    "a toaster"
+]
+
+scenarios = [
+    "became Prime Minister for a day",
+    "started giving unsolicited career advice",
+    "joined Toastmasters",
+    "became your personal coach",
+    "wrote a bestselling memoir",
+    "had to teach humans how to relax",
+    "was put in charge of the internet",
+    "ran a leadership retreat",
+    "was asked to solve climate change",
+    "became famous overnight",
+    "started a podcast",
+    "opened a restaurant",
+    "had to explain social media to aliens",
+    "became a motivational speaker",
+    "was hired as your life coach",
+    "won an Oscar",
+    "ran for mayor",
+    "had one wish to improve the world",
+    "created a new school subject",
+    "had to give a wedding speech"
+]
+
+endings = [
+    "what would happen first?",
+    "what would it say?",
+    "what rule would it create?",
+    "what would be its biggest mistake?",
+    "what advice would it give?",
+    "how would it change your life?",
+    "what would its slogan be?",
+    "why would people follow it?",
+    "what problem would it solve badly?",
+    "what would its first speech be about?"
+]
+
+reflective = [
+    "What is one habit that has changed your life?",
+    "What does courage look like in everyday life?",
+    "When have you changed your mind about something important?",
+    "What is one lesson you learned the hard way?",
+    "What is something you appreciate more as you get older?",
+    "What is one small decision that had a big impact?",
+    "What does being a good friend mean to you?",
+    "What is one thing you would like to be remembered for?",
+    "When do you feel most confident?",
+    "What is something you used to fear but now enjoy?",
+    "What is the best compliment you have ever received?",
+    "What is one thing you wish more people understood?",
+    "What does success look like outside of money?",
+    "What is one tradition worth keeping?",
+    "What is one rule you live by?",
+    "What is something ordinary that brings you joy?",
+    "What is one thing you would teach your younger self?",
+    "When was the last time you surprised yourself?",
+    "What is one thing you would do differently if you started again?",
+    "What is one value you refuse to compromise?"
+]
+
+leadership = [
+    "What makes someone easy to follow?",
+    "What is the difference between confidence and arrogance?",
+    "What should every new leader learn first?",
+    "How should a leader handle being wrong?",
+    "What makes a team trust each other?",
+    "What is one meeting rule every workplace should adopt?",
+    "What does accountability mean to you?",
+    "What is the best way to give feedback?",
+    "What makes a great mentor?",
+    "What is one leadership lesson you learned from sport?",
+    "How do you motivate someone who has lost confidence?",
+    "What is the most underrated leadership skill?",
+    "What should leaders stop doing immediately?",
+    "How do you know when to speak and when to listen?",
+    "What does leading by example really mean?",
+    "What makes a workplace enjoyable?",
+    "What is one thing managers often overcomplicate?",
+    "What makes a team meeting useful?",
+    "How should a leader build energy in a room?",
+    "What does ownership look like in real life?"
+]
+
+funny_prompts = []
+for subject in subjects:
+    for scenario in scenarios:
+        for ending in endings:
+            funny_prompts.append(f"If {subject} {scenario}, {ending}")
+
+# Additional themed originals.
+quirky = [
+    f"What would be the worst possible theme for a restaurant, and why?",
+    f"What is the most suspiciously confident object in your house?",
+    f"If you had to replace handshakes with a new greeting, what would it be?",
+    f"What everyday sound deserves a dramatic movie trailer?",
+    f"If your email inbox had a personality, what would it be like?",
+    f"What would be the funniest thing to make illegal for one day?",
+    f"If your last text message became a movie title, what genre would it be?",
+    f"What is the worst thing to hear from a GPS?",
+    f"If you could add one button to your life, what would it do?",
+    f"What would be the least useful superpower at work?",
+    f"If weather forecasts had honesty mode, what would they say?",
+    f"What is one product that needs a more dramatic name?",
+    f"If your wardrobe could vote, what would it vote against?",
+    f"What animal would make the best office manager?",
+    f"What would be the strangest thing to find in a boardroom?",
+    f"If breakfast cereal had political parties, which one would win?",
+    f"What is the most overrated kitchen utensil?",
+    f"If elevators played personalised theme songs, what would yours be?",
+    f"What would be the funniest warning label on a mirror?",
+    f"What is the worst possible motivational quote?",
+    f"If your shadow could talk, what secret would it reveal?",
+    f"What is the most dramatic way to announce you are making tea?",
+    f"If your browser history became a museum exhibit, what would it be called?",
+    f"What would be the worst job for a penguin?",
+    f"If your calendar could resign, what would its resignation letter say?",
+    f"What object in your house thinks it is more important than it is?",
+    f"If your coffee could negotiate, what would it demand?",
+    f"What is the most unnecessary thing to make competitive?",
+    f"If your laundry basket had a podcast, what would it complain about?",
+    f"What would be the worst advice from a fortune cookie?"
+]
+
+story = [
+    "Tell us about a time when Plan B became better than Plan A.",
+    "Tell us about a moment when you had to improvise.",
+    "Tell us about a time when you were completely out of your depth.",
+    "Tell us about a journey that changed your perspective.",
+    "Tell us about a small act of kindness you remember.",
+    "Tell us about a time technology betrayed you.",
+    "Tell us about a time you had to make a quick decision.",
+    "Tell us about a time you learned something from a child.",
+    "Tell us about a time you were pleasantly wrong.",
+    "Tell us about a moment that made you laugh at yourself.",
+    "Tell us about a time you were braver than you felt.",
+    "Tell us about a time you had to ask for help.",
+    "Tell us about a time a stranger surprised you.",
+    "Tell us about a time you changed your routine.",
+    "Tell us about a time you nearly gave up but didn’t.",
+    "Tell us about a time you had to explain something complicated simply.",
+    "Tell us about a time you took the scenic route.",
+    "Tell us about a moment you wish you could replay.",
+    "Tell us about a time you made something harder than it needed to be.",
+    "Tell us about a time you found joy in something small."
+]
+
+debate = [
+    "Is it better to be early or exactly on time?",
+    "Should adults have homework?",
+    "Are handwritten notes better than digital notes?",
+    "Is boredom useful?",
+    "Should every meeting have a time limit?",
+    "Is confidence more important than competence?",
+    "Are mistakes better teachers than success?",
+    "Should people spend more time doing nothing?",
+    "Is it better to be the funniest person in the room or the smartest?",
+    "Should everyone learn public speaking?",
+    "Is convenience making us lazy?",
+    "Are pets better judges of character than people?",
+    "Should every workplace have nap time?",
+    "Is optimism a skill?",
+    "Should we bring back handwritten letters?",
+    "Is being busy a badge of honour or a warning sign?",
+    "Should phones be banned at dinner tables?",
+    "Is nostalgia useful or dangerous?",
+    "Should everyone have a personal theme song?",
+    "Is failure underrated?"
+]
+
+# Build 500 extras, preserving order and uniqueness.
+candidate_extras = []
+candidate_extras.extend(quirky)
+candidate_extras.extend(reflective)
+candidate_extras.extend(leadership)
+candidate_extras.extend(story)
+candidate_extras.extend(debate)
+candidate_extras.extend(funny_prompts)
+
+seen = set(existing_questions)
+extras = []
+for q in candidate_extras:
+    if q not in seen:
+        extras.append(q)
+        seen.add(q)
+    if len(extras) == 500:
+        break
+
+all_questions = existing_questions + extras
+
+assert len(extras) == 500, len(extras)
+assert len(all_questions) == len(set(all_questions))
+
+out = Path("/mnt/data/questions-560.json")
+out.write_text(json.dumps(all_questions, ensure_ascii=False, indent=2), encoding="utf-8")
+
+print(f"Created {out} with {len(all_questions)} questions ({len(existing_questions)} existing + {len(extras)} new).")
